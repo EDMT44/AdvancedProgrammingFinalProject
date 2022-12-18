@@ -48,10 +48,11 @@ namespace Pipeline
         /// <param name="data"></param>
         /// <returns></returns>
        public  List<Tuple<string, double>> Execute(List<Tuple<string, double>> data) {
+            //Escribo los datos en el archivo .csv
             WriteToCsvFile(data);
             //Guardo las variables diponibles hasta el momento
             var originalFields = File.ReadLines(path).Select(x => x.Split(',')[0]).ToList();
-            originalFields.Remove("");
+            originalFields.Remove("");//Para no coger el 1er campo que aparece vacio debido al AppendLine()
             //Selecciono los procesadores uqe se puedenejecutar con las variables disponibles
             var processorsToExecute = _processors.Where(x => x.OriginalFields.All(y => originalFields.Contains(y) && x.State == ProcessorState.Idle)).ToList();
             // While mientras que existan procesadores que puedan ejecutarse
@@ -79,6 +80,11 @@ namespace Pipeline
             }
             return ReadFromCsvFile(originalFields);
         }
+        /// <summary>
+        /// Metodo Para leer del .csv file
+        /// </summary>
+        /// <param name="originFields">variables que queremos leer</param>
+        /// <returns></returns>
         private List<Tuple<string,double>> ReadFromCsvFile(List<string> originFields)
         {
             List<Tuple<string, double>> fields = new List<Tuple<string, double>>();
@@ -93,10 +99,10 @@ namespace Pipeline
             }
             return fields;
         }
-        //private void WriteFirstLine(Tuple<string, double> tuple)
-        //{
-        //    var temp = tuple.Item1 + ',' + tuple.Item2;
-        //}
+        /// <summary>
+        /// Metodo para escribir en el archivo .csv
+        /// </summary>
+        /// <param name="data">Los datos que queremos escribir</param>
         private void WriteToCsvFile(List<Tuple<string,double>> data)
         {
             List<string> list = new List<string>();
@@ -108,20 +114,5 @@ namespace Pipeline
 
                 File.AppendAllLines(path, list);
         }
-        /*
-        private List<Tuple<string,double>> ReadCsvFile(List<string> originFields)
-        {
-            var csvFileDescription = new CsvFileDescription
-            {
-
-                FirstLineHasColumnNames = true,
-                IgnoreUnknownColumns = true,
-                SeparatorChar = ',',
-                UseFieldIndexForReadingData = false
-            };
-            var csvContext = new CsvContext();
-            var fields = csvContext.Read<Data>()
-        }
-        */
     }
 }
