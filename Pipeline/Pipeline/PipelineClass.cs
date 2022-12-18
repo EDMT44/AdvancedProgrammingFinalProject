@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LINQtoCSV;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace Pipeline
 {
     public class PipelineClass
     {
+        private string path = @"C:\Users\edgar\source\repos\AdvancedProgrammingFinalProject\Data.csv";
         /// <summary>
         /// Datos a analizar y analizados distribuidos en una lista de Tuplas, donde el item1 es el nombre de la variable y el item2 es su valor
         /// </summary>
@@ -45,9 +48,10 @@ namespace Pipeline
         /// <param name="data"></param>
         /// <returns></returns>
        public  List<Tuple<string, double>> Execute(List<Tuple<string, double>> data) {
-            _context = new List<Tuple<string, double>>(data);
+            WriteToCsvFile(data);
             //Guardo las variables diponibles hasta el momento
-            var originalFields = _context.Select(x => x.Item1).ToList();
+            var originalFields = File.ReadLines(path).Select(x => x.Split(',')[0]).ToList();
+            originalFields.Remove("");
             //Selecciono los procesadores uqe se puedenejecutar con las variables disponibles
             var processorsToExecute = _processors.Where(x => x.OriginalFields.All(y => originalFields.Contains(y) && x.State == ProcessorState.Idle)).ToList();
             // While mientras que existan procesadores que puedan ejecutarse
@@ -57,27 +61,67 @@ namespace Pipeline
                 { 
                     //Seleccionar las variables que el procesador puede procesar
                     List<Tuple<string,double>> tuples = new List<Tuple<string,double>>();
-                    foreach (var tuple in _context)
-                    {
-                        if (processor.OriginalFields.Contains(tuple.Item1)){
-                            tuples.Add(tuple);
-                        }
-                    }
+                    tuples = ReadFromCsvFile(originalFields);
                     //Verificar que se hayan recogido la cantidad de variables que el processador necesita 
-                    if (tuples.Count == processor.OriginalFields.Count)
+                    if (tuples.Count >= processor.OriginalFields.Count)
                     {
                         //Ejecutar el procesador
                         var temp = processor.Execute(tuples);
                         //Actualizar el contexto
-                        _context.AddRange(temp);
+                        WriteToCsvFile(temp);
                     }
                 }
                 //Actualizar las variables disponibles
-                originalFields = _context.Select(x => x.Item1).ToList();
+                originalFields = File.ReadLines(path).Select(x => x.Split(',')[0]).ToList();
+                originalFields.Remove("");
                 //Actualizar los procesadores que se pueden ejecutar
                 processorsToExecute = _processors.Where(x => x.OriginalFields.All(y => originalFields.Contains(y)&&x.State == ProcessorState.Idle)).ToList();
             }
-            return _context;
+            return ReadFromCsvFile(originalFields);
         }
+        private List<Tuple<string,double>> ReadFromCsvFile(List<string> originFields)
+        {
+            List<Tuple<string, double>> fields = new List<Tuple<string, double>>();
+
+            foreach (var field in originFields)
+            {
+                var temp = File.ReadLines(path).FirstOrDefault(x => x.StartsWith(field));
+                if (temp != null) {
+                    var tuple = new Tuple<string, double>(field,double.Parse(temp.Split(',')[1]));
+                    fields.Add(tuple);
+                }
+            }
+            return fields;
+        }
+        //private void WriteFirstLine(Tuple<string, double> tuple)
+        //{
+        //    var temp = tuple.Item1 + ',' + tuple.Item2;
+        //}
+        private void WriteToCsvFile(List<Tuple<string,double>> data)
+        {
+            List<string> list = new List<string>();
+            foreach (var tuple in data)
+            {
+                string temp = tuple.Item1 + ',' + tuple.Item2.ToString();
+                list.Add(temp);
+            }
+
+                File.AppendAllLines(path, list);
+        }
+        /*
+        private List<Tuple<string,double>> ReadCsvFile(List<string> originFields)
+        {
+            var csvFileDescription = new CsvFileDescription
+            {
+
+                FirstLineHasColumnNames = true,
+                IgnoreUnknownColumns = true,
+                SeparatorChar = ',',
+                UseFieldIndexForReadingData = false
+            };
+            var csvContext = new CsvContext();
+            var fields = csvContext.Read<Data>()
+        }
+        */
     }
 }

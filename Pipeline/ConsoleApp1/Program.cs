@@ -8,6 +8,7 @@ namespace ConsoleApplication
     {
         static void Main()
         {
+            
             var Data = new List<Tuple<string, double>>();
             Data.Add(new Tuple<string, double>("numero1", 18));
             Data.Add(new Tuple<string, double>("numero2", 27));
@@ -34,7 +35,9 @@ namespace ConsoleApplication
             {
                 Console.WriteLine(item.Item1+"   "+item.Item2.ToString());
             }
+            
             //Console.WriteLine(new Tuple<string, float>("numero 1", 18).ToList())
+         
         }
       
     }
