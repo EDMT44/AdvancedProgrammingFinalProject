@@ -8,6 +8,7 @@ namespace Pipeline
 {
     public class Multiplicador : Processor
     {
+        #region Constructors
         /// <summary>
         /// Constructor
         /// </summary>
@@ -16,6 +17,8 @@ namespace Pipeline
         public Multiplicador(List<string> originalFields, List<string> derivedFields) : base( originalFields, derivedFields)
         {
         }
+        #endregion
+        #region Methods
         /// <summary>
         /// Metodo que ejecuta la multiplicacion de los valores de las variables de entrada y devuelve el mismo
         /// </summary>
@@ -28,12 +31,13 @@ namespace Pipeline
             double mult = 1;
             foreach (var field in data)
             {
-             mult *= field.Item2;
+                mult *= field.Item2;
             }
             list.Add(new Tuple<string, double>(DerivedFields[0], mult));
             State = ProcessorState.Finished;
 
             return list;
         }
+        #endregion
     }
 }

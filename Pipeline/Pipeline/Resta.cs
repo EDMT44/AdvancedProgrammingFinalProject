@@ -9,6 +9,7 @@ namespace Pipeline
 {
    public class Resta : Processor
     {
+        #region Constructors
         /// <summary>
         /// Constructor
         /// </summary>
@@ -17,6 +18,8 @@ namespace Pipeline
         public Resta(List<string> originalFields, List<string> derivedFields) : base(originalFields, derivedFields)
         {
         }
+        #endregion
+        #region Methods
         /// <summary>
         /// Metodo que 
         /// </summary>
@@ -25,10 +28,11 @@ namespace Pipeline
         public override List<Tuple<string, double>> Execute(List<Tuple<string, double>> data)
         {
             State = ProcessorState.Processing;
-
+            var temp = data;
             List<Tuple<string, double>> list = new List<Tuple<string, double>>();
-            double resta = 0;
-            foreach (var field in data)
+            double resta = temp[0].Item2;
+            temp.Remove(temp[0]);
+            foreach (var field in temp)
             {
                 resta -= field.Item2;
             }
@@ -37,5 +41,6 @@ namespace Pipeline
 
             return list;
         }
+        #endregion
     }
 }

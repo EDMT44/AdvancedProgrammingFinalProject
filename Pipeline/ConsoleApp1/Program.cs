@@ -8,36 +8,29 @@ namespace ConsoleApplication
     {
         static void Main()
         {
-            
+            //creando datos iniciales
             var Data = new List<Tuple<string, double>>();
-            Data.Add(new Tuple<string, double>("numero1", 18));
-            Data.Add(new Tuple<string, double>("numero2", 27));
-            Data.Add(new Tuple<string, double>("numero3", 100));
-            
-            Suma suma1 = new Suma(new List<string>(){"numero1","numero2","numero3" },new List<string>() { "suma1"});
-            Suma suma2 = new Suma(new List<string>() { "suma4","mult1" }, new List<string>() { "suma2" });
-            Suma suma3 = new Suma(new List<string>() { "mult1", "suma1" }, new List<string>() { "suma3" });
-            
-            Suma suma4 = new Suma(new List<string>() { "numero1", "numero2"}, new List<string>() { "suma4" });
-            Resta resta2 = new Resta(new List<string>() { "suma2", "suma3" }, new List<string>() { "resta2" });
-            
-            Multiplicador mult1 = new Multiplicador(new List<string>() { "numero1", "numero2", "numero3" }, new List<string>() { "mult1" });
+            Data.Add(new Tuple<string, double>("numero 1", 5));
+            Data.Add(new Tuple<string, double>("numero 2", 15));
+            Data.Add(new Tuple<string, double>("numero 3", 20));
+            //declarando procesadores
+            Suma suma = new Suma(new List<string>(){"numero 1","numero 2","numero 3" },
+                new List<string>() { "suma total"});
+            Multiplicador mult = new Multiplicador(new List<string>() { "numero 1", "numero 3" },
+                new List<string>() { "multiplicacion" });
+            Resta resta = new Resta(new List<string>() { "multiplicacion", "suma total" },
+                new List<string>() { "resta" });
 
+            // creando pipeline y agregandole procesadores
             PipelineClass pipeline = new PipelineClass ();
-            pipeline.AddProcessor(suma1)
-                    .AddProcessor(suma2)
-                    .AddProcessor(suma3)
-                    .AddProcessor(suma4)
-                    .AddProcessor(resta2)
-                    .AddProcessor(mult1);
+            pipeline.AddProcessor(suma)
+                    .AddProcessor(resta)
+                    .AddProcessor(mult);
             List<Tuple<string, double>> result = pipeline.Execute(Data);
             foreach (Tuple<string, double> item in result)
             {
                 Console.WriteLine(item.Item1+"   "+item.Item2.ToString());
             }
-            
-            //Console.WriteLine(new Tuple<string, float>("numero 1", 18).ToList())
-         
         }
       
     }

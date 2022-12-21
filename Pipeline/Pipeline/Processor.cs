@@ -9,10 +9,11 @@ namespace Pipeline
 {
     public abstract class Processor : IProcessor
     {
+        #region Properties
         /// <summary>
         /// Estado del procesador
         /// </summary>
-        public  ProcessorState State { get; set; }
+        public ProcessorState State { get; set; }
         /// <summary>
         /// Lista de los nombres de las variables de entrada
         /// </summary>
@@ -21,16 +22,21 @@ namespace Pipeline
         /// Lista de los nombres de las variables de salida
         /// </summary>
         public List<string> DerivedFields { get; set; }
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Metodo de ejecucion del procesador
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-
-       virtual public List<Tuple<string,double>> Execute(List<Tuple<string,double>> data)
+        virtual public List<Tuple<string,double>> Execute(List<Tuple<string,double>> data)
         {
             return data;
         }
+        #endregion
+
+        #region Constructors
         /// <summary>
         /// Constructor base del Procesador
         /// </summary>
@@ -41,5 +47,6 @@ namespace Pipeline
             OriginalFields = originalFields;
             DerivedFields = derivedFields;
         }
+        #endregion
     }
 }

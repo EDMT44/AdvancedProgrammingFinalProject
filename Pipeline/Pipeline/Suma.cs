@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Pipeline
 {
+    
     public class Suma : Processor
     {
+        #region Constructors
         /// <summary>
         /// Constructor
         /// </summary>
@@ -17,6 +19,9 @@ namespace Pipeline
         public Suma(List<string> originalFields, List<string> derivedFields) : base(originalFields, derivedFields)
         {
         }
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Metodo que ejecuta la suma de las variables de entrada y devuelve la misma
         /// </summary>
@@ -34,5 +39,6 @@ namespace Pipeline
             State = ProcessorState.Finished;
             return list;
         }    
+        #endregion
     }
 }
